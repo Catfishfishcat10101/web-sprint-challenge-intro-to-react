@@ -1,13 +1,45 @@
-import React from 'react'
+import React, { useState, useEffect } from "react";
+import { useParams } from "react-router-dom";
 
-function Character() { // ❗ Add the props
-  // ❗ Create a state to hold whether the homeworld is rendering or not
-  // ❗ Create a "toggle" click handler to show or remove the homeworld
+const CharacterDetails = () => {
+  const { id } = useParams();
+  const [character, setCharacter] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    fetch(`https://swapi.dev/api/people/${id}/`)
+      .then((response) => response.json())
+      .then((data) => {
+        setCharacter(data);
+        setLoading(false);
+      })
+      .catch((error) => {
+        setError(error);
+        setLoading(false);
+      });
+  }, [id]);
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  if (error) {
+    return <div>Error: {error.message}</div>;
+  }
+
   return (
     <div>
-      {/* Use the same markup with the same attributes as in the mock */}
+      <h1>{character.name}</h1>
+      <p>Height: {character.height}</p>
+      <p>Mass: {character.mass}</p>
+      <p>Hair Color: {character.hair_color}</p>
+      <p>Skin Color: {character.skin_color}</p>
+      <p>Eye Color: {character.eye_color}</p>
+      <p>Birth Year: {character.birth_year}</p>
+      <p>Gender: {character.gender}</p>
     </div>
-  )
-}
+  );
+};
 
-export default Character
+export default CharacterDetails;
