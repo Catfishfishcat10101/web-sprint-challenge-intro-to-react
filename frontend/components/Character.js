@@ -15,7 +15,7 @@ function Character(props) { // ❗ Add the props
   const toggleHomeworld = () => {
     setShowHomeworld(!showHomeworld)
   }
-]
+
   return (
     <StyledChar className="character-card" onClick={toggleHomeworld}>
       <h3 className="character-name">
