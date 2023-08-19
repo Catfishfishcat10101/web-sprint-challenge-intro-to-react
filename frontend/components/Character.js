@@ -1,32 +1,34 @@
-import React, { useCallback, useState } from "react";
+import React, { useState } from 'react'
+import { styled } from 'styled-components'
 
-const Character = ({ character, planet }) => {
-  if (!character || !planet) return null;
 
-  const [showPlanet, setShowPlanet] = useState(false);
-
-  const toggleShowPlanet = useCallback(() => {
-    setShowPlanet(prevShowPlanet => !prevShowPlanet);
-  }, []);
-
+const StyledChar = styled.div`
+span {
+  color: black;
+}
+`
+function Character(props) { // ❗ Add the props
+  const { character } = props
+  // ❗ Create a state to hold whether the homeworld is rendering or not
+  const [showHomeworld, setShowHomeworld] = useState(false)
+  // ❗ Create a "toggle" click handler to show or remove the homeworld
+  const toggleHomeworld = () => {
+    setShowHomeworld(!showHomeworld)
+  }
+]
   return (
-    <div className="character-card">
-      <h3 className="character-name">{character.name}</h3>
-      <p>Height: {character.height}</p>
-      {showPlanet && <p className="character-planet">{planet.name}</p>}
-      <button onClick={toggleShowPlanet}>
-        {showPlanet ? 'Hide Planet' : 'Show Planet'}
-      </button>
-    </div>
-  );
-};
-
-// Assuming planets and characters are defined in this scope
-const planet = planets.find(p => p.id === characters[0].homeworld);
-
-if (!planet) {
-  console.error('No matching planet found for character');
-  return null;
+    <StyledChar className="character-card" onClick={toggleHomeworld}>
+      <h3 className="character-name">
+        {character.name}
+      </h3>
+      {/* Use the same markup with the same attributes as in the mock */
+      showHomeworld && character.homeworldData && (
+          <><p>Planet: <span className="character-planet">{character.homeworldData.name}</span></p><p>Birth Year: <span className="character-birth-year">{character.birth_year}</span></p><p>Height: <span className="character-height">{character.height}</span></p></>
+      )}
+    </StyledChar>
+  )
 }
 
-return <Character character={characters[0]} planet={planet} />
+
+
+export default Character

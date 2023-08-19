@@ -1,56 +1,66 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import { BrowserRouter as Router } from "react-router-dom";
-import CharacterDetails from './CharacterDetails';
+import React, { useState, useEffect } from 'react'
+import axios from 'axios'
+import Character from './Character'
+
+const urlPlanets = 'http://localhost:9009/api/planets'
+const urlPeople = 'http://localhost:9009/api/people'
 
 function App() {
- const [characters, setCharacters] = useState([]);
- const [planets, setPlanets] = useState([]);
- const [showPlanet, setShowPlanet] = useState(false);
+  // ❗ Create state to hold the data from the API
+  const [characters, setCharacters] = useState()
+  // ❗ Create effects to fetch the data and put it in state
+  useEffect(() => {
+    
+    const fetchData = () => {
+    
+      axios.get(urlPeople)
+        .then(characterResponse => {
+    
+          axios.get(urlPlanets)
+            .then(planetResponse => {
+              const planets = planetResponse.data;
+              const charactersWithHomeworld = characterResponse.data.map(character => {
+                const homeworldData = planets.find(planet => planet.id === character.homeworld);
+    
+                return {
+                  ...character,
+                  homeworldData: homeworldData
+                };
+              });
+    
+              setCharacters(charactersWithHomeworld);
+    
+            })
+    
+            .catch(error => {
+              console.error('Error fetching planet data:', error);
+            });
+        })
+    
+        .catch(error => {
+          console.error('Error fetching character data:', error);
+        });
+    };
+  
+    fetchData();
+  }, []);
 
- useEffect(() => {
-   const fetchData = async () => {
-     try {
-       const response = await axios.get('http://localhost:9009/api/people');
-       setCharacters(response.data);
-     } catch (error) {
-       console.log('Error fetching characters:', error);
-     }
-
-     try {
-       const response = await axios.get('http://localhost:9009/api/planets');
-       setPlanets(response.data);
-     } catch (error) {
-       console.log('Error fetching planets:', error);
-     }
-   };
-
-   fetchData();
- }, []);
-
- // Render your components here, using the characters and planets data
- {
-   characters.map(char => (
-     <Character character={char} planet={planets.find(p => p.id === char.homeworld)} />
-   ))
- }
-
- <button onClick={() => setShowPlanet(!showPlanet)}>
-   {showPlanet ? 'Hide' : 'Show'}
- </button>
- {showPlanet && <p>{planet.name}</p>}
-
- return (
-   <Router>
-     <CharacterDetails />
-   </Router>
- );
+  return (
+    <div>
+      <h2>Star Wars Characters</h2>
+      <p>See the README of the project for instructions on completing this challenge</p>
+      <div>
+        {/* ❗ Map over the data in state, rendering a Character at each iteration */
+        characters && characters.map(character => (
+          <Character key={character.id} character={character} />
+        ))
+        }
+      </div>
+    </div>
+  )
 }
 
-export default App;
-
-// ❗ DO NOT CHANGE THE CODE  BELOW
-if (typeof module !== 'undefined' && module.exports) module.exports = App
+export default App
 
 // ❗ DO NOT CHANGE THE CODE  BELOW
 if (typeof module !== 'undefined' && module.exports) module.exports = App
