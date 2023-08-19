@@ -1,45 +1,19 @@
-import React, { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import React, { useState, } from "react";
 
-const CharacterDetails = () => {
-  const { id } = useParams();
-  const [character, setCharacter] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-
-  useEffect(() => {
-    fetch(`https://swapi.dev/api/people/${id}/`)
-      .then((response) => response.json())
-      .then((data) => {
-        setCharacter(data);
-        setLoading(false);
-      })
-      .catch((error) => {
-        setError(error);
-        setLoading(false);
-      });
-  }, [id]);
-
-  if (loading) {
-    return <div>Loading...</div>;
-  }
-
-  if (error) {
-    return <div>Error: {error.message}</div>;
-  }
+const Character = ({ character, planet }) => {
+  const [showPlanet, setShowPlanet] = useState(false);
 
   return (
-    <div>
-      <h1>{character.name}</h1>
+    <div className="character-card">
+      <h3 className="character-name">{character.name}</h3>
       <p>Height: {character.height}</p>
-      <p>Mass: {character.mass}</p>
-      <p>Hair Color: {character.hair_color}</p>
-      <p>Skin Color: {character.skin_color}</p>
-      <p>Eye Color: {character.eye_color}</p>
-      <p>Birth Year: {character.birth_year}</p>
-      <p>Gender: {character.gender}</p>
+      {showPlanet && <p className="character-planet">{planet.name}</p>}
+      <button onClick={() => setShowPlanet(!showPlanet)}>
+        {showPlanet ? 'Hide Planet' : 'Show Planet'}
+      </button>
     </div>
   );
 };
+const planet = planets.find(p => p.id === characters[0].howmworld);
 
-export default CharacterDetails;
+return <Character character={characters[0]} planet={planet} />
