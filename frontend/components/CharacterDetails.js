@@ -4,8 +4,8 @@ import { useParams } from "react-router-dom";
 
 const CharacterDetails = () => {
  const { id } = useParams();
- const [character, setCharacter] = useState(null);
- const [loading, setLoading] = useState(true);
+ const [character, setCharacter] = useState(true);
+ const [loading, setLoading] = useState(null);
  const [error, setError] = useState(null);
 
  useEffect(() => {
